@@ -1,0 +1,144 @@
+<style>
+    body{margin:0;}
+    .menu{
+        position: fixed;
+        border: 1px solid red;       
+        overflow-y: scroll;
+    }
+.topMenu{
+    width: 100%;
+    height:100px;
+}
+
+.bottomMenu{
+    width: 100%;
+    height:100px;
+    bottom: 0;
+}
+
+.leftMenu{
+    width: 20%;
+    height: calc(100% - 200px);
+    left: 0;
+    top:100px;
+}
+
+.rightMenu{
+    width: 20%;
+    height: calc(100% - 200px);
+    top:100px;
+    right: 0;
+}
+.centerArea{
+    width: 60%;
+    top: 100px;
+    height: calc(100% - 200px);
+    right: 20%;
+}
+</style>
+<div>
+    <div class="topMenu menu">
+        <div class=controllersList></div>
+    </div>
+
+    <div class="leftMenu menu">
+        <div class=controllersList></div>
+    </div>
+    <div class="rightMenu menu">
+        <div class=controllersList></div>
+    </div>
+    <div class="bottomMenu menu">
+        <div class=controllersList></div>
+    </div>
+    <div class="centerArea menu">
+        <div class=controllersList></div>
+    </div>
+    
+</div>
+
+<script>    
+window.onload = function(){
+    renderPost("/editclient/controllers","controllersList")
+}
+</script>
+
+<script id="controllersList" type="text/template">
+    <div>{Database}</div>
+</script>
+
+<script>
+
+function renderData(data,templateName){
+
+    var allstr = '';
+        for(var i = 0 ; i < data.length; i++)
+        {
+            var oneRow = document.getElementById(templateName).innerText;
+
+            for(var param in data[i])            
+                oneRow = oneRow.replace('{' + param + '}',data[i][param]);
+            
+                allstr+=oneRow;
+        }
+        var allItems = document.getElementsByClassName(templateName)
+        for(var i = 0 ; i<allItems.length ; i++ )
+            allItems[i].innerHTML = allstr;     
+}
+
+async function renderPost(url,templateName)
+{   
+    postData(url, data = {})
+    .then(res=>{
+        res=res.resultdata[0];
+
+        renderData(res,templateName)
+            
+    })
+}
+    
+
+async function renderGet(url,templateName)
+{   
+    get(url)
+    .then(res=>{
+        res=res.resultdata[0];
+        var allstr = '';
+        for(var i = 0 ; i < res.length; i++)
+        {
+            var oneRow = document.getElementById(templateName).innerText;
+
+            for(var param in res[i])            
+                oneRow = oneRow.replace('{' + param + '}',res[i][param]);
+            
+                allstr+=oneRow;
+        }
+        var allItems = document.getElementsByClassName(templateName)
+        for(var i = 0 ; i<allItems.length ; i++ )
+            allItems[i].innerHTML = allstr;        
+    })
+}
+
+async function get(url)
+{
+    const response = await fetch(url, {
+        method: "GET", 
+        headers: {
+        "Content-Type": "text/html"
+        }
+    });
+
+    return response.text();
+}
+    
+function postData(url = "", data = {}) {
+    return fetch(url, {
+        method: "POST", 
+        headers: {
+        "Content-Type": "application/json"
+        },
+        body: JSON.stringify(data)
+    }).then(res=>res.json());
+}
+
+</script>
+

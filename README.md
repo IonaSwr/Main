@@ -1,2 +1,3 @@
 # Main
-my site that will have links to other projects on line
+here is how to render on client side without any frame work
+with less code posible
